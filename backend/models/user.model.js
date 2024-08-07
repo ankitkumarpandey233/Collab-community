@@ -1,60 +1,68 @@
 import mongoose from "mongoose";
 
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:110607011.
-const userSchema = new mongoose.Schema({
-    username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  fullName: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-    minLength:6,
-  },        
-  email:{
-    type:String,
-    required:true,
-    unique:true,
-  }, 
-  followers: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default:[]
-    }
-  ],
-  following: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default:[]
-    }
-  ],
+const userSchema = new mongoose.Schema(
+	{
+		username: {
+			type: String,
+			required: true,
+			unique: true,
+		},
+		fullName: {
+			type: String,
+			required: true,
+		},
+		password: {
+			type: String,
+			required: true,
+			minLength: 6,
+		},
+		email: {
+			type: String,
+			required: true,
+			unique: true,
+		},
+		followers: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "User",
+				default: [],
+			},
+		],
+		following: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "User",
+				default: [],
+			},
+		],
+		profileImg: {
+			type: String,
+			default: "",
+		},
+		coverImg: {
+			type: String,
+			default: "",
+		},
+		bio: {
+			type: String,
+			default: "",
+		},
 
-  profileImg:{
-    type:String,
-    default:"",
-  },
-  coverImg:{
-    type:String,
-    default:"",
-  },
-  bio:{
-    type:String,
-    default:"",
-  },
-link:{
-    type:String,
-    default:"",
-  },
-},{timestamps:true}
+		link: {
+			type: String,
+			default: "",
+		},
+		likedPosts: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Post",
+				default: [],
+			},
+		],
+	},
+	{ timestamps: true }
 );
 
-const user = mongoose.model("user",userSchema);
+const User = mongoose.model("User", userSchema);
 
-export default user;
+export default User;

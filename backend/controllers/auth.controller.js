@@ -1,106 +1,107 @@
-import user from "../models/user.model.js";
+import { generateTokenAndSetCookie } from "../lib/utils/generateToken.js";
+import User from "../models/user.model.js"; // Import as User
 import bcrypt from 'bcryptjs';
 
 
 export const signup = async (req, res) => {
-    try {
-        const { fullName, username, email, password } = req.body;
+	try {
+		const { fullName, username, email, password } = req.body;
 
-        const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        if (!emailRegex.test(email)) {
-            return res.status(400).json({ message: "Invalid email" });
-        }
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) {
+			return res.status(400).json({ error: "Invalid email format" });
+		}
 
-        // Suggested code may be subject to a license. Learn more: ~LicenseLog:2264423953.
-        // Suggested code may be subject to a license. Learn more: ~LicenseLog:2535609617.
-        const existingUser = await User.findOne({ username: username });
-        if (existingUser) {
-            return res.status(400).json({ message: "User already exists" });
-        }
+		const existingUser = await User.findOne({ username });
+		if (existingUser) {
+			return res.status(400).json({ error: "Username is already taken" });
+		}
 
-        const existingEmail = await User.findOne({ email: email });
-        if (existingEmail) {
-            return res.status(400).json({ message: "Email already exists" });
-        }
+		const existingEmail = await User.findOne({ email });
+		if (existingEmail) {
+			return res.status(400).json({ error: "Email is already taken" });
+		}
 
-        //hash Password
+		if (password.length < 6) {
+			return res.status(400).json({ error: "Password must be at least 6 characters long" });
+		}
 
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:4236665818.
-        if(password.length<6){return res.status(400).json({ message: "password must be 6 digit long" });}
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+		const salt = await bcrypt.genSalt(10);
+		const hashedPassword = await bcrypt.hash(password, salt);
 
-        const newUser = new User({
-            fullName,
-            username,
-            email,
-            password: hashedPassword,
-        });
-        if(newUser){
-            generateTokenAndSetCookie(newUser._id,res);
-            await newUser.save();
-            
-            return res.status(201).json({
-                _id: newUser._id,
-                fullName: newUser.fullName,
-                username: newUser.username,
-                email: newUser.email,
-                followers: newUser.followers,
-                following: newUser.following,
-                profileImg: newUser.profileImg,
-                coverImg: newUser.coverImg,
-            })
-        }else{
-            return res.status(400).json({ message: "Invalid user data" });
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: error.message });
-    }
+		const newUser = new User({
+			fullName,
+			username,
+			email,
+			password: hashedPassword,
+		});
+
+		if (newUser) {
+			generateTokenAndSetCookie(newUser._id, res);
+			await newUser.save();
+
+			res.status(201).json({
+				_id: newUser._id,
+				fullName: newUser.fullName,
+				username: newUser.username,
+				email: newUser.email,
+				followers: newUser.followers,
+				following: newUser.following,
+				profileImg: newUser.profileImg,
+				coverImg: newUser.coverImg,
+			});
+		} else {
+			res.status(400).json({ error: "Invalid user data" });
+		}
+	} catch (error) {
+		console.log("Error in signup controller", error.message);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 };
+
+
 export const login = async (req, res) => {
-    try{
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:3310913787.
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:2614342619.
+    try {
         const { username, password } = req.body;
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:1538526218.
         const user = await User.findOne({ username: username });
-        const isPasswordcorrect = await bcrypt.compare(password, user?.password|| "");
-        if(!user || !isPasswordcorrect){
+        const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
+        if (!user || !isPasswordCorrect) {
             return res.status(400).json({ message: "Invalid username or password" });
         }
-        generateTokenAndSetCookie(user._id,res);
+        generateTokenAndSetCookie(user._id, res);
 
-        res.status(200).json({ 
-            _id:user._id,
-            fullName:user.fullName,
-            username:user.username,
-            email:user.email,
-            followers:user.followers,
-            following:user.following,
-            profileImg:user.profileImg,
-            coverImg:user.coverImg
+        res.status(200).json({
+            _id: user._id,
+            fullName: user.fullName,
+            username: user.username,
+            email: user.email,
+            followers: user.followers,
+            following: user.following,
+            profileImg: user.profileImg,
+            coverImg: user.coverImg
         });
-    }catch(error){
-        console.log(error);
+    } catch (error) {
+        console.log("Error in login function: ", error.message);
         res.status(500).json({ message: error.message });
     }
 };
-export const logout = async (req, res) => {
-  try {
-    res.cookie("jwt","",{maxAge:0})
-    res.status(200).json({ message: "Logged out successfully" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: error.message });
-  }
-};
-export const getMe= async(req,res)=>{
 
-    try{
-        const user = await user.findById(req.user._id).select("-password");
-    }catch(error){
-        console.log(error);
-        res.status(500).json({ message: error.message });   
+export const logout = async (req, res) => {
+    try {
+        res.cookie("jwt", "", { maxAge: 0 });
+        res.status(200).json({ message: "Logged out successfully" });
+    } catch (error) {
+        console.log("Error in logout function: ", error.message);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const getMe = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).select("-password");
+        res.status(200).json(user);
+    } catch (error) {
+        console.log("Error in getMe function: ", error.message);
+        res.status(500).json({ message: error.message });
     }
 };
