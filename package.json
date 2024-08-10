@@ -12,6 +12,7 @@
   "type": "module",
   "license": "ISC",
   "dependencies": {
+    "@tanstack/react-query": "^5.51.23",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.4.0",
     "cookie-parser": "^1.4.6",
@@ -20,7 +21,8 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.2",
-    "openssl": "^2.0.0"
+    "openssl": "^2.0.0",
+    "react-hot-toast": "^2.4.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
