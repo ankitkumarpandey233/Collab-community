@@ -35,7 +35,7 @@ app.use(cors({
 const PORT = process.env.PORT|| 8000;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json("5mb"));
 app.use(express.urlencoded({extended:true}))// to parse form data
 app.use(cookieParser());
 app.use("/api/auth",authRoutes);
