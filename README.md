@@ -1,6 +1,7 @@
-# 📚 Student Query Platform
+# 📚🌟 Collab: Connect, Collaborate, Conquer 🌟
 
-Welcome to the **Student Query Platform**! This platform is designed to help students post queries and ask questions related to their projects, much like Twitter but tailored specifically for students.
+
+Welcome to  **Collab** — a platform designed to foster collaboration among students, where you can share your project ideas, ask questions, and connect with like-minded peers. Think of it as a social network tailored specifically for students who are passionate about learning and working together.
 
 ## 🌟 Features
 
@@ -94,4 +95,4 @@ Thanks to all the open-source projects that were used in this platform.
 
 ---
 
-Made with ❤️ by [Ankit Pandey](https://github.com/ankitkumarpandey 233)
+Made with ❤️ by [Ankit Pandey](https://github.com/ankitkumarpandey233)
