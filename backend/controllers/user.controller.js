@@ -152,3 +152,42 @@ export const updateUser = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
+
+// Get followers of a user
+export const getUserFollowers = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const user = await User.findById(userId).populate('followers');
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        res.json(user.followers);
+    } catch (error) {
+        console.log("error in getUserFollowers function ");
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Get following users of a user
+export const getUserFollowing = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const user = await User.findById(userId).populate('following');
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        res.json(user.following);
+    } catch (error) {
+        console.log("error in getUserFollowing function ");
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Get all users
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (error) {
+        console.log("error in getAllUsers function ");
+        res.status(500).json({ error: error.message });
+    }
+};

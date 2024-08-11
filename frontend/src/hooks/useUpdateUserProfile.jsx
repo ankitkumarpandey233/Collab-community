@@ -14,12 +14,26 @@ const useUpdateUserProfile = () => {
 					},
 					body: JSON.stringify(formData),
 				});
+
+				// Check if the response content type is JSON
+				const contentType = res.headers.get("Content-Type");
+				if (!contentType || !contentType.includes("application/json")) {
+					if (res.status === 413) { // PayloadTooLargeError
+						throw new Error("File size too large. Please upload a smaller photo.");
+					}
+					throw new Error("Unexpected response format. Please try again.");
+				}
+
+				// If the response is not ok, handle the error
 				const data = await res.json();
 				if (!res.ok) {
 					throw new Error(data.error || "Something went wrong");
 				}
+
 				return data;
 			} catch (error) {
+				// Log the actual error message for debugging
+				console.log("Error: ", error.message);
 				throw new Error(error.message);
 			}
 		},
