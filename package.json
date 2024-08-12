@@ -1,13 +1,13 @@
 {
   "name": "collab",
-  "version": "1.0.0",
-  "description": "Get started by customizing your environment (defined in the .idx/dev.nix file) with the tools and IDE extensions you'll need for your project!",
-  "main": "backend/server.js",
-  "scripts": {
+	"version": "1.0.0",
+	"description": "",
+	"main": "backend/server.js",
+	"scripts": {
 		"dev": "NODE_ENV=development nodemon backend/server.js",
 		"start": "NODE_ENV=production node backend/server.js",
-    "build": "npm install && cd frontend && npm install && npm run build"
-  },
+		"build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
+	},
   "keywords": [],
   "author": "",
   "type": "module",
